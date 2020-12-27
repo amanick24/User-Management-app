@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService{
 	public boolean isEmailUnique(String emailId) {
 		
 		UserEntity userObj = userRepo.findByEmailId(emailId);
-		if(userObj.getEmailId() == null) {
+		if(userObj == null) {
 			return true;
 		}
 		
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService{
 		UserEntity userObj = userRepo.findByEmailIdAndPassword(emailId, pwd);
 		
 		if(userObj.getPassword() == pwd) {
-			if(userObj.getAccStatus() == "Lock") {
+			if(userObj.getAccStatus() == "LOCKED") {
 				return "Please UNLOCK your passoword";
 			}
 			return "Valid password";
@@ -110,7 +110,8 @@ public class UserServiceImpl implements UserService{
 	public boolean isTempPwdValid(String emailId, String tempPwd) {
 		
 		UserEntity userObj = userRepo.findByEmailId(emailId);
-		if(userObj.getPassword() == tempPwd) {
+		String password = userObj.getPassword();
+		if(password.equals(tempPwd)) {
 			return true;
 		}
 		return false;
@@ -120,6 +121,7 @@ public class UserServiceImpl implements UserService{
 	public boolean unlockAccount(String emailId, String newPwd) {
 		UserEntity userObj = userRepo.findByEmailId(emailId);
 		userObj.setPassword(newPwd);
+		userObj.setAccStatus("UNLOCKED");
 		try {
 		userRepo.save(userObj);
 		return true;

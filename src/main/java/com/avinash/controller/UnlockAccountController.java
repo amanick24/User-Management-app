@@ -12,30 +12,27 @@ import com.avinash.service.UserService;
 @RequestMapping("/api")
 public class UnlockAccountController {
 
-	
 	@Autowired
 	private UserService userService;
-	
-	@PostMapping("/auth")
-	public boolean checkTmpPwdValid(@RequestParam String emailId, @RequestParam String tempPwd) {
-		
+
+	@PostMapping("/checkpwd")
+	public boolean checkTmpPwdValid( @RequestParam String emailId, @RequestParam String tempPwd) {
+
+		System.out.println(emailId +" "+ tempPwd);
 		boolean tempPwdValid = userService.isTempPwdValid(emailId, tempPwd);
 		return tempPwdValid;
 	}
-	
-	
-	@PostMapping("/auth")
+
+	@PostMapping("/updatepwd")
 	public String updateNewPwd(@RequestParam String emailId, @RequestParam String newPwd) {
 
 		boolean unlockAccount = userService.unlockAccount(emailId, newPwd);
-		if(unlockAccount == true) {
+		if (unlockAccount == true) {
 			return "Successfully unlocked your account";
 		}
-		
-		
+
 		return "Password not updated";
-		
-		
+
 	}
-	
+
 }
